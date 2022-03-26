@@ -1,0 +1,16 @@
+{
+  "name": "wetube-clone",
+  "version": "1.0.0",
+  "description": "the platform Youtube clone for practicing",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mason3144/wetube-reloaded.git"
+  },
+  "author": "Mason Lee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mason3144/wetube-reloaded/issues"
+  },
+  "homepage": "https://github.com/Mason3144/wetube-reloaded#readme"
+}
