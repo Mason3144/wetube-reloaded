@@ -1,7 +1,7 @@
 import User from "../models/User";
+import Video from "../models/Video";
 import bcrypt from "bcrypt";
 import fetch from "node-fetch";
-import session from "express-session";
 
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" })
@@ -14,10 +14,10 @@ export const postJoin = async (req, res) => {
     const usernameExists = await User.exists({ username });
     const emailExists = await User.exists({ email })
     if (usernameExists) {
-        return res.status(400).render("join", { pageTitle, errorMessage: `This username is already taken` })
+        return res.status(400).render("join", { pageTitle, errorMessage: `This username : ${username} is already taken` })
     }
     if (emailExists) {
-        return res.status(400).render("join", { pageTitle, errorMessage: `This email is already taken` })
+        return res.status(400).render("join", { pageTitle, errorMessage: `This email : ${email} is already taken` })
     }
 
     await User.create({
@@ -86,7 +86,6 @@ export const finishGithubLogin = async (req, res) => {
                 },
             })
         ).json()
-        console.log(userData)
         const emailData = await (
             await fetch(`${apiUrl}/user/emails`, {
                 headers: {
@@ -135,21 +134,65 @@ export const postEdit = async (req, res) => {
     //const {name, email, username, location } = req.body
     const {
         session: {
-            user: { _id },
+            user: { _id, avatarUrl },
         },
-        body: { name, email, username, location }
+        body: { name, email, username, location },
+        file,
     } = req;
+    const usernameExists = await User.exists({ username });
+    const emailExists = await User.exists({ email })
+    if (usernameExists && usernameExists._id.toString() !== _id) {
+        return res.status(400).render("edit-profile", { pageTitle: "Edit Profile", errorMessage: `This username : ${username} is already taken` })
+    }
+    if (emailExists && emailExists._id.toString() !== _id) {
+        return res.status(400).render("edit-profile", { pageTitle: "Edit Profile", errorMessage: `This email : ${email} is already taken` })
+    }
 
     const updatedUser = await User.findByIdAndUpdate(_id, {
+        avatarUrl: file ? file.path : avatarUrl,
         name,
         email,
         username,
         location,
     }, { new: true });
-    req.session.user = updatedUser
 
+    req.session.user = updatedUser
     return res.redirect("/users/edit");
 }
 
+export const getChangePassword = (req, res) => {
+    if (req.session.user.socialOnly === true) {
+        return res.redirect("/")
+    }
+    return res.render("users/change-password", { pageTitle: "Change Password" })
+}
+export const postChangePassword = async (req, res) => {
+    const {
+        session: {
+            user: { _id, },
+        },
+        body: { newPassword, newPasswordConfirm, oldPassword }
+    } = req;
+    const user = await User.findById({ _id, socialOnly: false })
+    const ok = await bcrypt.compare(oldPassword, user.password);
+    if (!ok) {
+        return res.status(400).render("users/change-password", { pageTitle: "Change Password", errorMessage: "Old password does not match." })
+    }
+    if (newPassword !== newPasswordConfirm) {
+        return res.status(400).render("users/change-password", { pageTitle: "Change Password", errorMessage: "New password confirmation does not match" })
+    }
+    user.password = newPassword
+    req.session.user = user
+    await user.save()
+    return res.redirect("/")
+}
 
-export const see = (req, res) => res.send("See");
+
+export const see = async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id).populate("videos");
+    if (!user) {
+        return res.status(404).render("404", { pageTitle: "User not found" })
+    }
+    return res.render("users/profile", { pageTitle: user.name, user })
+};
