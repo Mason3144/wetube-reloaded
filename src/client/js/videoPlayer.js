@@ -8,7 +8,6 @@ const timeline = document.getElementById("timeline");
 const fullScreenBtn = document.getElementById("fullScreenBtn");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
-
 let volumeValue = 0.5;
 video.volume = volumeValue;
 
@@ -18,6 +17,7 @@ let videoStatus2 = false;
 let controlsTimout = null;
 let controlsMovementTimeout = null;
 
+
 const handlePlayClick = (e) => {
     if (video.paused) {
         video.play()
@@ -26,22 +26,23 @@ const handlePlayClick = (e) => {
         video.pause()
         // playBtn.innerText = "Play";
     }
-    playBtn.innerText = video.paused ? "Play" : "Pause"
-}
-const handleMute = (e) => {
-    // if (video.muted) {
-    //     video.muted = false;
-    //     muteBtn.innerText = "Unmute"
-    //     volumeRange.value = 0
-    // } else {
-    //     video.muted = true;
-    //     muteBtn.innerText = "Mute"
-    //     volumeRange.value = 0.5
-    // }
-    video.muted = video.muted ? false : true;
-    muteBtn.innerText = video.muted ? "Unmute" : "Mute";
 
-    volumeRange.value = video.muted ? 0 : volumeValue;
+    if (video.paused) {
+        playBtn.classList.replace("fa-pause", "fa-play")
+    } else {
+        playBtn.classList.replace("fa-play", "fa-pause")
+    }
+}
+const handleMute = () => {
+    if (video.muted) {
+        video.muted = false;
+        muteBtn.classList.replace("fa-volume-high", "fa-volume-xmark")
+        volumeRange.value = 0
+    } else {
+        video.muted = true;
+        muteBtn.classList.replace("fa-volume-xmark", "fa-volume-high")
+        volumeRange.value = volumeValue
+    }
 }
 
 const handleVolumeChange = (event) => {
@@ -54,11 +55,12 @@ const handleVolumeChange = (event) => {
     video.volume = value;
     if (video.volume === 0) {
         video.muted = true;
-        muteBtn.innerText = "Unmute"
+        muteBtn.classList.replace("fa-volume-high", "fa-volume-xmark")
     } else {
         video.muted = false;
-        muteBtn.innerText = "Mute"
+        muteBtn.classList.replace("fa-volume-xmark", "fa-volume-high")
     }
+
 
 }
 const formatTime = (seconds) => {
@@ -101,7 +103,6 @@ const pauseTimeline = () => {
 }
 
 const shortcutKeyCtr = (event) => {
-    console.log(event.code)
     if (event.code === "Space") {
         return handlePlayClick();
     }
@@ -116,11 +117,13 @@ const handleFullScreen = () => {
     const fullescreen = document.fullscreenElement;
     if (fullescreen) {
         document.exitFullscreen()
-        fullScreenBtn.innerText = "Enter Full Screen"
+        fullScreenBtn.classList.replace("fa-compress", "fa-expand")
     } else {
         videoContainer.requestFullscreen()
-        fullScreenBtn.innerText = "Exit Full Screen"
+        fullScreenBtn.classList.replace("fa-expand", "fa-compress")
     }
+
+
 }
 
 const hideControls = () => videoControls.classList.remove("showing")
