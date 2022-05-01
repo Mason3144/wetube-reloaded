@@ -7,6 +7,7 @@ import rootRouter from "./routers/rootRouter.js";
 import userRouter from "./routers/userRouter.js";
 import videoRouter from "./routers/videoRouter.js";
 import { localsMiddleware } from "./middlewares.js";
+import apiRouter from "./routers/apiRouter.js";
 
 
 
@@ -34,6 +35,8 @@ app.use(localsMiddleware);
 app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
+app.use("/api", apiRouter);
+
 
 export default app;
 
