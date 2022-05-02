@@ -8,6 +8,7 @@ import userRouter from "./routers/userRouter.js";
 import videoRouter from "./routers/videoRouter.js";
 import { localsMiddleware } from "./middlewares.js";
 import apiRouter from "./routers/apiRouter.js";
+import flash from "express-flash"
 
 
 
@@ -28,7 +29,7 @@ app.use(session({
 
 
 
-
+app.use(flash())
 app.use("/uploads", express.static("uploads"))
 app.use("/static", express.static("assets"))
 app.use(localsMiddleware);

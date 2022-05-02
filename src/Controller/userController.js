@@ -9,15 +9,18 @@ export const postJoin = async (req, res) => {
     const { name, email, username, password, password2, location } = req.body;
     const pageTitle = "Join";
     if (password !== password2) {
-        return res.status(400).render("join", { pageTitle, errorMessage: "Password confirmation does not match" })
+        req.flash("error", "Password confirmation does not match.")
+        return res.status(400).render("join", { pageTitle })
     }
     const usernameExists = await User.exists({ username });
     const emailExists = await User.exists({ email })
     if (usernameExists) {
-        return res.status(400).render("join", { pageTitle, errorMessage: `This username : ${username} is already taken` })
+        req.flash("error", `This username : ${username} is already taken`)
+        return res.status(400).render("join", { pageTitle })
     }
     if (emailExists) {
-        return res.status(400).render("join", { pageTitle, errorMessage: `This email : ${email} is already taken` })
+        req.flash("error", `This email : ${email} is already taken`)
+        return res.status(400).render("join", { pageTitle })
     }
 
     await User.create({
@@ -27,7 +30,7 @@ export const postJoin = async (req, res) => {
         password,
         location
     })
-
+    req.flash("success", "Creating an account success. Please log in.")
     return res.redirect("/login")
 
 }
@@ -37,11 +40,13 @@ export const postLogin = async (req, res) => {
     const pageTitle = "Login"
     const user = await User.findOne({ username, socialOnly: false })
     if (!user) {
-        return res.status(400).render("login", { pageTitle, errorMessage: "An account with this username does not exists." })
+        req.flash("error", "An account with this username does not exists.")
+        return res.status(400).render("login", { pageTitle })
     }
     const ok = await bcrypt.compare(password, user.password);
     if (!ok) {
-        return res.status(400).render("login", { pageTitle, errorMessage: "Password does not match." })
+        req.flash("error", "The confirmation of password does not match.")
+        return res.status(400).render("login", { pageTitle })
     }
     req.session.loggedIn = true;
     req.session.user = user
@@ -157,11 +162,13 @@ export const postEdit = async (req, res) => {
     }, { new: true });
 
     req.session.user = updatedUser
+    req.flash("success", "Changing profile success.")
     return res.redirect("/users/edit");
 }
 
 export const getChangePassword = (req, res) => {
     if (req.session.user.socialOnly === true) {
+        req.flash("info", "Social log in user cannot change password.")
         return res.redirect("/")
     }
     return res.render("users/change-password", { pageTitle: "Change Password" })
@@ -176,14 +183,17 @@ export const postChangePassword = async (req, res) => {
     const user = await User.findById({ _id, socialOnly: false })
     const ok = await bcrypt.compare(oldPassword, user.password);
     if (!ok) {
+        req.flash("error", "Your previous password does not match.")
         return res.status(400).render("users/change-password", { pageTitle: "Change Password", errorMessage: "Old password does not match." })
     }
     if (newPassword !== newPasswordConfirm) {
+        req.flash("error", "The confirmation of password does not match.")
         return res.status(400).render("users/change-password", { pageTitle: "Change Password", errorMessage: "New password confirmation does not match" })
     }
     user.password = newPassword
     req.session.user = user
     await user.save()
+    req.flash("success", "Changing password success.")
     return res.redirect("/")
 }
 
@@ -198,6 +208,7 @@ export const see = async (req, res) => {
         }
     });
     if (!user) {
+        req.flash("error", "User does not exist.")
         return res.status(404).render("404", { pageTitle: "User not found" })
     }
     return res.render("users/profile", { pageTitle: user.name, user })

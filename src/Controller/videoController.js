@@ -12,7 +12,8 @@ export const watch = async (req, res) => {
     const { id } = req.params;
     const video = await Video.findById(id).populate("owner")
     if (!video) {
-        return res.status(404).render("404", { pageTitle: "Video not found." });
+        req.flash("error", "Video does not exist.")
+        return res.status(404).render("404");
     }
     return res.render("watch", { pageTitle: `Watch ${video.title}`, video });
 };
@@ -27,6 +28,7 @@ export const getEdit = async (req, res) => {
     }
 
     if (String(video.owner) !== String(_id)) {    //video.owner.toString()
+        req.flash("error", "You are not the owner of this video.")
         return res.status(403).redirect("/")
     }
     return res.render("edit", { pageTitle: `Editing`, video });
@@ -81,9 +83,11 @@ export const deleteVideo = async (req, res) => {
     const user = await User.findById(_id);
 
     if (!video) {
+        req.flash("info", "Video does not exist.")
         return res.status(404).render("404", { pageTitle: "Video not found." });
     }
     if (String(video.owner) !== String(_id)) {    //video.owner.toString()
+        req.flash("error", "You are not the owner of this video.")
         return res.status(403).redirect("/")
     }
     await Video.findByIdAndDelete(id)
@@ -102,6 +106,7 @@ export const search = async (req, res) => {
             }
         }).populate("owner")
     }
+
     res.render("search", { pageTitle: "Search", videos });
 }
 
