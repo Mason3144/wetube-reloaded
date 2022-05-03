@@ -17,9 +17,9 @@ header
                     a(href=`/users/${loggedInUser._id}`)
                         if loggedInUser.avatarUrl
                             if loggedInUser.avatarUrl.startsWith("uploads")
-                                img.header__avatar(src="/"+loggedInUser.avatarUrl)
+                                img.header__avatar(src="/"+loggedInUser.avatarUrl,crossorigin)
                             if !loggedInUser.avatarUrl.startsWith("uploads")
-                                img.header__avatar(src=loggedInUser.avatarUrl)
+                                img.header__avatar(src=loggedInUser.avatarUrl,crossorigin)
                         else 
                             div.header__avatar.empty__avatar
             else

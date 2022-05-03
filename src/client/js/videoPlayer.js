@@ -17,6 +17,7 @@ let videoStatus2 = false;
 let controlsTimout = null;
 let controlsMovementTimeout = null;
 
+video.play()
 
 const handlePlayClick = (e) => {
     if (video.paused) {
