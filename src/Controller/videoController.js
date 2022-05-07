@@ -1,5 +1,6 @@
 import Video from "../models/Video";
 import User from "../models/User";
+import Comment from "../models/Comment";
 
 export const home = async (req, res) => {
     const videos = await Video.find({}).sort({ createdAt: "desc" }).populate("owner");
@@ -10,12 +11,13 @@ export const home = async (req, res) => {
 
 export const watch = async (req, res) => {
     const { id } = req.params;
-    const video = await Video.findById(id).populate("owner")
+    const video = await Video.findById(id).populate("owner").populate("comment")
     if (!video) {
         req.flash("error", "Video does not exist.")
         return res.status(404).render("404");
     }
     return res.render("watch", { pageTitle: `Watch ${video.title}`, video });
+
 };
 
 
@@ -121,3 +123,49 @@ export const registerView = async (req, res) => {
     await video.save();
     return res.sendStatus(200);
 }
+
+export const createComment = async (req, res) => {
+    // const { id } = req.params;
+    // const { text } = req.body;
+    // const { user } = req.session;
+    const {
+        session: { user },
+        body: { text },
+        params: { id },
+    } = req;
+
+    const video = await Video.findById(id);
+
+    if (!video) {
+        req.flash("error", "Video does not exist.")
+        return res.sendStatus(404);
+    }
+    const comment = await Comment.create({
+        text,
+        owner: user._id,
+        video: id
+    });
+    video.comment.push(comment._id)
+    video.save()
+    return res.status(201).json({ newCommentId: comment._id })
+}
+
+export const deleteComment = async (req, res) => {
+    const { id } = req.params
+    const comment = await Comment.findById(id)
+    const videoId = comment.video
+    const video = await Video.findById(videoId)
+    const { _id } = req.session.user
+
+    if (String(comment.owner) !== String(_id)) {
+        return res.sendStatus(403)
+    }
+
+    await Comment.findByIdAndDelete(id);
+    video.comment.splice(video.comment.indexOf(videoId), 1);
+    video.save();
+    return res.sendStatus(200)
+
+}
+
+

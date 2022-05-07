@@ -16,21 +16,36 @@ block content
                         span  / 
                         span#totalTime 00:00                           
                 span#fullScreenBtn.fa-solid.fa-expand.videoControls-components
-    
-    //- div
-    //-     p=video.description
-    //-     small=video.createdAt
-    //- div 
-    //-     small Uploaded by 
-    //-         a(href=`/users/${video.owner._id}`)=video.owner.name
-
-    //-     ul
-    //-         li=video.hashtags
-    hr
+    br
     if String(video.owner._id) === String(loggedInUser._id)
         a(href=`${video.id}/edit`) Edit Video &rarr;
         br
         a(href=`${video.id}/delete`) Delete Video &rarr;
 
+    br
+    if loggedIn
+        div.video__add-comments 
+            form.video__comment-form#commentForm
+                textarea(cols="30", rows="10", placeholder="Write a nice comment")
+                button Add Comment
+    if !loggedIn
+        span log in for comment
+
+    div.video__comments
+        ul 
+            each comment in video.comment.reverse()
+                li.video__comment(data-id=comment.id)
+                    div
+                        i.fas.fa-comment
+                        span   #{comment.text}
+                    div 
+                        if String(comment.owner._id) === String(loggedInUser._id)
+                            span.fas.fa-x.deleteBtn
+    
+
 block scripts
     script(src="/static/js/videoPlayer.js")
+    script(src="/static/js/commentSection.js")
+
+
+
