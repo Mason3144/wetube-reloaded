@@ -18,7 +18,6 @@ let controlsTimout = null;
 let controlsMovementTimeout = null;
 
 video.play()
-
 const handlePlayClick = (e) => {
     if (video.paused) {
         video.play()
@@ -153,7 +152,6 @@ const handleEnded = () => {
         method: "POST"
     })
 }
-
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);

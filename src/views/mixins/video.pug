@@ -13,8 +13,12 @@ mixin video(video)
                 div.empty__avatar
             div.video-mixin__data
                 span.video-mixin__title=video.title
-                div.video-mixin__meta
-                    span #{video.owner.name} | 
-                    span #{video.meta.views} 회
+                span #{video.owner.name}
+                div.video-mixin__meta(data-createdat= video.createdAt)
+                    span 조회수 #{video.meta.views} 회 |  
+                    span.video-date 
+                    
+
 block scripts
     script(src="/static/js/mouseover.js")
+    script(src="/static/js/countingDate.js")

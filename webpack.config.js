@@ -9,7 +9,8 @@ module.exports = {
         videoPlayer: PATH_JS + "videoPlayer.js",
         recorder: PATH_JS + "recorder.js",
         mouseover: PATH_JS + "mouseover.js",
-        commentSection: PATH_JS + "commentSection.js"
+        commentSection: PATH_JS + "commentSection.js",
+        countingDate: PATH_JS + "countingDate.js",
     },
     mode: "development",
     watch: true,
