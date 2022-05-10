@@ -8,6 +8,8 @@ const timeline = document.getElementById("timeline");
 const fullScreenBtn = document.getElementById("fullScreenBtn");
 const videoContainer = document.getElementById("videoContainer");
 const videoControls = document.getElementById("videoControls");
+const textarea = document.getElementById("textarea")
+
 let volumeValue = 0.5;
 video.volume = volumeValue;
 
@@ -103,7 +105,11 @@ const pauseTimeline = () => {
 }
 
 const shortcutKeyCtr = (event) => {
-    if (event.code === "Space") {
+    if (event.target.id === "textarea") {
+        return
+    }
+    if (event.keyCode === 32 && event.target === document.body) {
+        event.preventDefault();
         return handlePlayClick();
     }
     if (event.code === "KeyM") {
@@ -152,6 +158,7 @@ const handleEnded = () => {
         method: "POST"
     })
 }
+
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);

@@ -14,6 +14,9 @@ export const home = async (req, res) => {
 export const watch = async (req, res) => {
     const { id } = req.params;
     const video = await Video.findById(id).populate("owner").populate("comment")
+
+
+
     if (!video) {
         req.flash("error", "Video does not exist.")
         return res.status(404).render("404");
@@ -150,6 +153,25 @@ export const createComment = async (req, res) => {
     video.comment.push(comment._id)
     video.save()
     return res.status(201).json({ newCommentId: comment._id })
+}
+
+export const editComment = async (req, res) => {
+    const {
+        session: { user },
+        body: { text },
+        params: { id },
+    } = req;
+    const checkUser = await Comment.findById(id);
+    if (user._id !== checkUser.owner._id.toString()) {
+        req.flash("error", "User does not match.")
+        return res.sendStatus(404);
+    }
+    await Comment.findByIdAndUpdate(id, {
+        text,
+    })
+    return res.sendStatus(201)
+
+
 }
 
 export const deleteComment = async (req, res) => {

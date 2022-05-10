@@ -1,4 +1,5 @@
 extends base.pug
+include mixins/comment
 
 block content 
     div#videoContainer(data-id = video._id)
@@ -17,31 +18,32 @@ block content
                         span#totalTime 00:00                           
                 span#fullScreenBtn.fa-solid.fa-expand.videoControls-components
     br
-    if String(video.owner._id) === String(loggedInUser._id)
-        a(href=`${video.id}/edit`) Edit Video &rarr;
-        br
-        a(href=`${video.id}/delete`) Delete Video &rarr;
+    div
+        span #{video.hashtags.toString().replaceAll(",", " ")} 
+        span #{video.title}
+    div
+        div
+            span 조회수 #{video.meta.views} 회
+            span.fa-solid.fa-heart
+        div
+            if String(video.owner._id) === String(loggedInUser._id)
+                a(href=`${video.id}/edit`) Edit Video &rarr;
+                a(href=`${video.id}/delete`) Delete Video &rarr;
 
     br
     if loggedIn
         div.video__add-comments 
             form.video__comment-form#commentForm
-                textarea(cols="30", rows="10", placeholder="Write a nice comment")
+                textarea#textarea(cols="30", rows="10", placeholder="Write a nice comment")
                 button Add Comment
     if !loggedIn
-        span log in for comment
+        a(href="/login") log in for comment =>
 
     div.video__comments
         ul 
             each comment in video.comment.reverse()
-                li.video__comment(data-id=comment.id)
-                    div
-                        i.fas.fa-comment
-                        span   #{comment.text}
-                    div 
-                        if String(comment.owner._id) === String(loggedInUser._id)
-                            span.fas.fa-x.deleteBtn
-    
+                +comment(comment)  
+            
 
 block scripts
     script(src="/static/js/videoPlayer.js")

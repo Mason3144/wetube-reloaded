@@ -1,0 +1,12 @@
+mixin comment(comment)
+    li.video__comment(data-id=comment.id)
+        div
+            div
+            div
+                div.parentNode
+                    i.fas.fa-comment
+                    span.contentSpan #{comment.text}
+                div 
+                    if String(comment.owner._id) === String(loggedInUser._id)
+                        span.fas.fa-x.deleteCommentBtn
+                        span.fa-solid.fa-paintbrush.editCommentBtn

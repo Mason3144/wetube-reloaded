@@ -1,7 +1,6 @@
 const videoContainer = document.getElementById("videoContainer")
 const form = document.getElementById("commentForm");
 const li = document.querySelector("li")
-const deleteBtn = document.querySelectorAll(".deleteBtn")
 
 const addComment = (text, id) => {
     const videoComments = document.querySelector(".video__comments ul");
@@ -13,7 +12,9 @@ const addComment = (text, id) => {
     const icon = document.createElement("i")
     icon.className = "fas fa-comment"
     const span = document.createElement("span")
+    span.className = "contentSpan"
     span.innerText = ` ${text}`
+
     const span2 = document.createElement("span")
     span2.className = "fas fa-x deleteBtn"
     newComment.appendChild(div);
@@ -48,25 +49,87 @@ const handleSubmit = async (event) => {
     }
 }
 
-const deleteClick = (e) => {
-    const deleteComment = async (event) => {
-        const path = event.path[2]
-        const { id } = path.dataset
-        const res = await fetch(`/api/videos/${id}/comment/delete`, {
-            method: "DELETE"
-        })
-        if (res.status === 200) {
-            path.remove()
-        }
-
-
-    }
-    e.addEventListener("click", deleteComment)
-}
 
 
 if (form) {
     form.addEventListener("submit", handleSubmit)
 }
 
-deleteBtn.forEach(deleteClick);
+
+
+const video__comment = document.querySelectorAll(".video__comment")
+
+
+
+const modifyComment = (e) => {
+    const deleteCommentBtn = e.querySelector(".deleteCommentBtn")
+    const editCommentBtn = e.querySelector(".editCommentBtn")
+    const parentNode = e.querySelector(".parentNode")
+    const { id } = e.dataset
+
+
+    const deleteComment = async () => {
+        const res = await fetch(`/api/videos/${id}/comment/delete`, {
+            method: "DELETE"
+        })
+        if (res.status === 200) {
+            e.remove()
+        }
+
+
+    }
+
+    const editComment = () => {
+        const contentSpan = e.querySelector(".contentSpan")
+        const editBtn = document.createElement("button")
+        const textarea = document.createElement("textarea")
+        editBtn.className = "editBtn"
+        textarea.className = "textarea"
+        parentNode.replaceChild(textarea, contentSpan);
+        e.appendChild(editBtn)
+        textarea.innerText = contentSpan.innerText
+        editBtn.innerText = "submit"
+
+        editBtn.addEventListener("click", editCommentServer)
+
+    }
+
+    deleteCommentBtn.addEventListener("click", deleteComment)
+    editCommentBtn.addEventListener("click", editComment)
+
+    const updateComment = (text) => {
+        const editBtn = e.querySelector(".editBtn")
+        const textarea = e.querySelector(".textarea")
+        const contentSpan = document.createElement("contentSpan")
+        contentSpan.className = "contentSpan"
+        parentNode.replaceChild(contentSpan, textarea);
+        contentSpan.innerText = text
+        editBtn.remove()
+    }
+
+    const editCommentServer = async (event) => {
+        const textarea = parentNode.querySelector("textarea")
+        const commentId = e.dataset.id
+        const text = textarea.value
+        if (text === "") {
+            return
+        }
+        const response = await fetch(`/api/comment/${commentId}/edit`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ text }),
+
+        })
+        if (response.status === 201) {
+            updateComment(text)
+        }
+
+
+    }
+
+}
+
+
+video__comment.forEach(modifyComment);
