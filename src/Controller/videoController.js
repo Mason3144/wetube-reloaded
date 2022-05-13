@@ -3,8 +3,8 @@ import User from "../models/User";
 import Comment from "../models/Comment";
 
 
-
 export const home = async (req, res) => {
+
     const videos = await Video.find({}).sort({ createdAt: "desc" }).populate("owner");
     return res.render("home", { pageTitle: "Home", videos });
 
@@ -128,6 +128,33 @@ export const registerView = async (req, res) => {
     await video.save();
     return res.sendStatus(200);
 }
+
+export const likeCounting = async (req, res) => {
+    const { _id } = req.session.user
+    const { id } = req.params;
+    const video = await Video.findById(id);
+    if (!video) {
+        return res.sendStatus(404);
+    }
+    const repeated = video.like.users.find(element => element.toString() === _id.toString())
+    if (repeated && repeated.toString() === _id) {
+        video.like.users.splice(video.like.users.indexOf(_id), 1);
+        video.like.likes = video.like.users.length;
+        await video.save()
+        console.log("deleted")
+        return res.sendStatus(200);
+    }
+    if (!repeated) {
+        video.like.users.push(_id)
+        video.like.likes = video.like.users.length;
+        await video.save();
+        console.log("pushed")
+        return res.sendStatus(200);
+    }
+
+
+}
+
 
 export const createComment = async (req, res) => {
     // const { id } = req.params;

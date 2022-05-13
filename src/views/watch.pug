@@ -23,8 +23,14 @@ block content
         span #{video.title}
     div
         div
-            span 조회수 #{video.meta.views} 회
-            span.fa-solid.fa-heart
+            span 조회수 #{video.meta.views} 회  
+            form(method="POST", action="/api/videos/${video.id}/like")
+                span#videoLikeSpan=video.like.users.length
+                
+                if video.like.users.find(element => String(element) === loggedInUser._id)
+                    button#videoLikeBtn.fa-solid.fa-heart.liked
+                if !video.like.users.find(element => String(element) === loggedInUser._id)
+                    button#videoLikeBtn.fa-solid.fa-heart
         div
             if String(video.owner._id) === String(loggedInUser._id)
                 a(href=`${video.id}/edit`) Edit Video &rarr;
@@ -48,6 +54,7 @@ block content
 block scripts
     script(src="/static/js/videoPlayer.js")
     script(src="/static/js/commentSection.js")
+    script(src="/static/js/like.js")
 
 
 

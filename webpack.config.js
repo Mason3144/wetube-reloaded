@@ -11,6 +11,7 @@ module.exports = {
         mouseover: PATH_JS + "mouseover.js",
         commentSection: PATH_JS + "commentSection.js",
         countingDate: PATH_JS + "countingDate.js",
+        like: PATH_JS + "like.js",
     },
     mode: "development",
     watch: true,
