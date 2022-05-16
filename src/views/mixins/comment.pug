@@ -1,12 +1,28 @@
 mixin comment(comment)
     li.video__comment(data-id=comment.id)
-        div
-            div
-            div
-                div.parentNode
-                    i.fas.fa-comment
-                    span.contentSpan #{comment.text}
-                div 
+        div.firstDiv
+            div.avatar__div
+                if comment.avatarUrl
+                    if comment.avatarUrl.startsWith("uploads")
+                        img.comment_avatar(src="/"+comment.avatarUrl,crossorigin)
+                    if !comment.avatarUrl.startsWith("uploads")
+                        img.comment_avatar(src=comment.avatarUrl,crossorigin)
+                else 
+                    div.comment_avatar.empty__avatar
+            div.textAndBtn
+                div.parentNode(data-createdat=comment.createdAt)
+                    span.usernameSpan #{comment.username}
+                    span.date_counting
+                span.contentSpan #{comment.text}
+                div.btns
+                    form(method="POST", action=`/api/comment/${comment.id}/like`)
+                        if comment.like.users.find(element => String(element) === loggedInUser._id)
+                            button#commentLikeBtn.fa-solid.fa-thumbs-up.liked
+                        if !comment.like.users.find(element => String(element) === loggedInUser._id)
+                            button#commentLikeBtn.fa-solid.fa-thumbs-up
+                        span#commentLikeSpan=comment.like.users.length
+                    
                     if String(comment.owner._id) === String(loggedInUser._id)
-                        span.fas.fa-x.deleteCommentBtn
-                        span.fa-solid.fa-paintbrush.editCommentBtn
+                        div.editingBtns
+                            span.fa-solid.fa-pencil.editCommentBtn
+                            span.fas.fa-x.deleteCommentBtn

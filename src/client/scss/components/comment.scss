@@ -1,17 +1,174 @@
+.comment__add {
+    margin: 30px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+
+    span {
+        font-size: 25px;
+    }
+
+
+}
+
+.comment_login {
+    padding: 15px;
+    font-size: 20px;
+    border-radius: 5px;
+    background-color: #ECECEC;
+    color: #909CB7;
+    text-align: center;
+}
+
+.comment_login:hover {
+    background-color: $red;
+    color: white
+}
+
+
+.video__add-comments {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+
+}
+
+.comment_avatar {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    margin-right: 20px;
+}
+
+
+.video__comment-form {
+    padding: 0;
+    padding-top: 40px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-direction: column;
+    border-color: transparent;
+    background-color: transparent;
+
+    width: 100%;
+    max-width: 100%;
+
+    button {
+        margin: 5px;
+        padding: 10px;
+        border-radius: 5px;
+        width: 180px;
+        font-size: 20px;
+        border-color: transparent;
+        color: #909CB7;
+        background-color: #ECECEC;
+    }
+
+
+}
+
+#textarea {
+    outline: none;
+    resize: none;
+    width: 100%;
+    font-size: 25px;
+    color: white;
+    border-color: transparent;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+    background-color: transparent;
+    height: 100px;
+}
+
+
+
 .video__comments {
     display: flex;
-    flex-direction: column;
-    max-width: 320px;
-    width: 100%;
-    margin: 0 auto;
     margin-top: 20px;
+    color: white;
+}
 
-    .video__comment {
-        padding: 10px;
-        border-radius: 50px;
-        background-color: red;
-        color: black;
-        margin-bottom: 10px;
-        ;
+.video__comments-ul {
+    width: 100%;
+}
+
+.firstDiv {
+    display: flex;
+    flex-direction: row;
+    max-width: 100%;
+
+}
+
+.parentNode {
+    display: flex;
+    align-items: center;
+
+    .usernameSpan {
+        font-size: 25px;
+        font-weight: 500;
+        margin-right: 10px;
     }
+}
+
+.contentSpan {
+    display: block;
+    font-size: 25px;
+    max-height: 100px;
+    width: 100%;
+}
+
+.textAndBtn {
+    width: 100%;
+}
+
+.btns {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 50px;
+
+    form {
+        padding: 0;
+        margin: 0;
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+
+        button {
+            background-color: transparent;
+            cursor: pointer;
+            border: none;
+            font-size: 25px;
+            margin-right: 5px;
+            color: white;
+        }
+
+        .liked {
+            color: #ea0909;
+        }
+
+        span {
+            font-size: 20px;
+        }
+    }
+}
+
+.editCommentBtn,
+.deleteCommentBtn {
+    margin: 5px;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.editCancel,
+.editBtn {
+    margin: 5px;
+    font-size: 25px;
+    cursor: pointer;
+    color: white;
+    background-color: #ea0909;
+    border-radius: 5px;
 }

@@ -14,9 +14,9 @@ mixin video(video)
             div.video-mixin__data
                 span.video-mixin__title=video.title
                 span #{video.owner.name}
-                div.video-mixin__meta(data-createdat= video.createdAt)
+                div.video-mixin__meta(data-createdat=video.createdAt)
                     span 조회수 #{video.meta.views} 회 |  
-                    span.video-date 
+                    span.date_counting 
                     
 
 block scripts

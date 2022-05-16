@@ -1,9 +1,9 @@
 const div = document.querySelectorAll(".video-mixin__meta")
+const commentDiv = document.querySelectorAll(".parentNode")
 
 const countingDate = (event) => {
     const { createdat } = event.dataset
-    const span = event.querySelector(".video-date")
-
+    const span = event.querySelector(".date_counting")
 
     const setDate = new Date(createdat);
     const currentTime = new Date();
@@ -25,9 +25,11 @@ const countingDate = (event) => {
         span.innerText = `${hours} 시간전`
     } else if (minutes > 0) {
         span.innerText = `${minutes} 분전`
+    } else if (minutes < 1) {
+        span.innerText = `0 분전`
     }
 
 }
 
 div.forEach(countingDate)
-
+commentDiv.forEach(countingDate)

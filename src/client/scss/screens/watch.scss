@@ -1,0 +1,78 @@
+.video__header {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+}
+
+.video__hashtag {
+    font-size: 20px;
+}
+
+.video__title {
+    font-size: 40px;
+}
+
+.video__featurs {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    font-size: 25px;
+    color: rgba(255, 255, 255, 0.9);
+
+    form {
+        display: flex;
+        align-items: center;
+        padding: 30px;
+        background-color: transparent;
+        border: transparent;
+
+        .fa-thumbs-up {
+            background-color: transparent;
+            border: transparent;
+            cursor: pointer;
+            font-size: 35px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-right: 5px;
+
+        }
+
+        .liked {
+            color: #ea0909;
+        }
+    }
+}
+
+.editDelete {
+    background-color: #CC0000;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.video__owner {
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+
+
+    .video__owner-avatar {
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+    }
+
+    span {
+        margin-left: 20px;
+        font-size: 20px;
+        font-weight: 500;
+    }
+}
+
+.video__description {
+    margin-top: 10px;
+    margin-left: 90px;
+    font-size: 20px;
+    margin-bottom: 30px;
+}

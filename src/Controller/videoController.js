@@ -1,6 +1,7 @@
 import Video from "../models/Video";
 import User from "../models/User";
 import Comment from "../models/Comment";
+import { sendStatus } from "express/lib/response";
 
 
 export const home = async (req, res) => {
@@ -14,9 +15,6 @@ export const home = async (req, res) => {
 export const watch = async (req, res) => {
     const { id } = req.params;
     const video = await Video.findById(id).populate("owner").populate("comment")
-
-
-
     if (!video) {
         req.flash("error", "Video does not exist.")
         return res.status(404).render("404");
@@ -130,30 +128,58 @@ export const registerView = async (req, res) => {
 }
 
 export const likeCounting = async (req, res) => {
-    const { _id } = req.session.user
     const { id } = req.params;
     const video = await Video.findById(id);
     if (!video) {
+        req.flash("error", "Video does not exist.")
         return res.sendStatus(404);
     }
+    if (!req.session.user) {
+        req.flash("info", "Please login for comment.")
+        return res.sendStatus(404)
+    }
+    const { user: { _id } } = req.session
     const repeated = video.like.users.find(element => element.toString() === _id.toString())
     if (repeated && repeated.toString() === _id) {
         video.like.users.splice(video.like.users.indexOf(_id), 1);
         video.like.likes = video.like.users.length;
         await video.save()
-        console.log("deleted")
         return res.sendStatus(200);
     }
     if (!repeated) {
         video.like.users.push(_id)
         video.like.likes = video.like.users.length;
         await video.save();
-        console.log("pushed")
         return res.sendStatus(200);
     }
-
-
 }
+export const commentLike = async (req, res) => {
+    const { id } = req.params;
+    const comment = await Comment.findById(id);
+    if (!comment) {
+        req.flash("error", "Comment does not exist.")
+        return res.sendStatus(404);
+    }
+    if (!req.session.user) {
+        req.flash("info", "Please login for comment.")
+        return res.sendStatus(404)
+    }
+    const { user: { _id } } = req.session
+    const repeated = comment.like.users.find(element => element.toString() === _id.toString())
+    if (repeated && repeated.toString() === _id) {
+        comment.like.users.splice(comment.like.users.indexOf(_id), 1);
+        comment.like.likes = comment.like.users.length;
+        await comment.save()
+        return res.sendStatus(200);
+    }
+    if (!repeated) {
+        comment.like.users.push(_id)
+        comment.like.likes = comment.like.users.length;
+        await comment.save();
+        return res.sendStatus(200);
+    }
+}
+
 
 
 export const createComment = async (req, res) => {
@@ -165,7 +191,6 @@ export const createComment = async (req, res) => {
         body: { text },
         params: { id },
     } = req;
-
     const video = await Video.findById(id);
 
     if (!video) {
@@ -174,12 +199,17 @@ export const createComment = async (req, res) => {
     }
     const comment = await Comment.create({
         text,
+        avatarUrl: user.avatarUrl,
         owner: user._id,
-        video: id
+        video: id,
+        username: user.username,
     });
+    const commentPopulate = await Comment.findById(comment._id).populate("owner");
+    const avatarUrl = commentPopulate.owner.avatarUrl
     video.comment.push(comment._id)
     video.save()
-    return res.status(201).json({ newCommentId: comment._id })
+
+    return res.status(201).json({ newCommentId: comment._id, avatarUrl })
 }
 
 export const editComment = async (req, res) => {
@@ -212,9 +242,10 @@ export const deleteComment = async (req, res) => {
         return res.sendStatus(403)
     }
 
-    await Comment.findByIdAndDelete(id);
-    video.comment.splice(video.comment.indexOf(videoId), 1);
+    await Comment.findByIdAndDelete(comment._id);
+    video.comment.splice(video.comment.indexOf(comment._id), 1);
     video.save();
+
     return res.sendStatus(200)
 
 }

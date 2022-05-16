@@ -18,43 +18,61 @@ block content
                         span#totalTime 00:00                           
                 span#fullScreenBtn.fa-solid.fa-expand.videoControls-components
     br
-    div
-        span #{video.hashtags.toString().replaceAll(",", " ")} 
-        span #{video.title}
-    div
-        div
+    div.video__header
+        span.video__hashtag #{video.hashtags.toString().replaceAll(",", " ")}
+        span.video__title #{video.title}         
+    div.video__featurs
+        div.video__featurs
             span 조회수 #{video.meta.views} 회  
             form(method="POST", action="/api/videos/${video.id}/like")
-                span#videoLikeSpan=video.like.users.length
-                
                 if video.like.users.find(element => String(element) === loggedInUser._id)
-                    button#videoLikeBtn.fa-solid.fa-heart.liked
+                    button#videoLikeBtn.fa-solid.fa-thumbs-up.liked
                 if !video.like.users.find(element => String(element) === loggedInUser._id)
-                    button#videoLikeBtn.fa-solid.fa-heart
+                    button#videoLikeBtn.fa-solid.fa-thumbs-up
+                span#videoLikeSpan=video.like.users.length
         div
             if String(video.owner._id) === String(loggedInUser._id)
-                a(href=`${video.id}/edit`) Edit Video &rarr;
-                a(href=`${video.id}/delete`) Delete Video &rarr;
+                a.editDelete(href=`${video.id}/edit`) Edit Video
+                a.editDelete(href=`${video.id}/delete`) Delete Video
+    hr.hr
+    div
+        div.video__owner
+            if video.owner.avatarUrl
+                    if video.owner.avatarUrl.startsWith("uploads")
+                        img.video__owner-avatar(src="/"+video.owner.avatarUrl,crossorigin)
+                    if !video.owner.avatarUrl.startsWith("uploads")
+                        img.video__owner-avatar(src=video.owner.avatarUrl,crossorigin)
+            else 
+                div.video__owner-avatar.empty__avatar
+            span=video.owner.username        
+        div.video__description=video.description
 
-    br
+    hr.hr
+    div.comment__add
+        span 댓글 #{video.comment.length}개
+        if !loggedIn
+            a.comment_login(href="/login") Log in for comment
     if loggedIn
-        div.video__add-comments 
-            form.video__comment-form#commentForm
-                textarea#textarea(cols="30", rows="10", placeholder="Write a nice comment")
-                button Add Comment
-    if !loggedIn
-        a(href="/login") log in for comment =>
+            div.video__add-comments
+                if loggedInUser.avatarUrl
+                    if loggedInUser.avatarUrl.startsWith("uploads")
+                        img.comment_avatar(src="/"+loggedInUser.avatarUrl,crossorigin)
+                    if !loggedInUser.avatarUrl.startsWith("uploads")
+                        img.comment_avatar(src=loggedInUser.avatarUrl,crossorigin)
+                else 
+                    div.comment_avatar.empty__avatar
+                form.video__comment-form#commentForm
+                    textarea#textarea(placeholder="Write a nice comment")
+                    button Add Comment
 
     div.video__comments
-        ul 
+        ul.video__comments-ul(data-username=`${loggedInUser.username}`)
             each comment in video.comment.reverse()
-                +comment(comment)  
-            
-
+                +comment(comment) 
 block scripts
     script(src="/static/js/videoPlayer.js")
     script(src="/static/js/commentSection.js")
     script(src="/static/js/like.js")
-
+    script(src="/static/js/countingDate.js")
 
 

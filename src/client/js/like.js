@@ -23,4 +23,8 @@ const switchLike = () => {
 }
 
 
+
+
 videoLikeBtn.addEventListener("click", handleVideoLike)
+
+
