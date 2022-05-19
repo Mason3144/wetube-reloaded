@@ -13,8 +13,6 @@ module.exports = {
         countingDate: PATH_JS + "countingDate.js",
         like: PATH_JS + "like.js",
     },
-    mode: "development",
-    watch: true,
     plugins: [new MiniCssExtractPlugin({
         filename: "css/styles.css"
     })],
