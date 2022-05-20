@@ -1,8 +1,5 @@
 const videoContainer = document.getElementById("videoContainer")
 const form = document.getElementById("commentForm");
-const formBtn = form.querySelector("button")
-const li = document.querySelector("li")
-const textarea = form.querySelector("textarea")
 
 
 
@@ -186,8 +183,10 @@ const addComment = (text, id, avatarUrl) => {
 
 const handleSubmit = async (event) => {
     event.preventDefault()
+    const formBtn = event.target[1]
     const videoId = videoContainer.dataset.id;
     const text = textarea.value;
+
     if (text === "") {
         return;
     }
@@ -209,7 +208,7 @@ const handleSubmit = async (event) => {
 }
 
 const btnChange = (e) => {
-
+    const formBtn = e.target.form[1]
     if (e.target.value === "") {
         formBtn.style.color = "#909CB7"
         formBtn.style.background = "#ECECEC"
@@ -223,6 +222,7 @@ const btnChange = (e) => {
 }
 
 if (form) {
+    const textarea = form.querySelector("textarea")
     form.addEventListener("submit", handleSubmit)
     textarea.addEventListener("input", btnChange)
 }
