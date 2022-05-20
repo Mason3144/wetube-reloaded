@@ -4,9 +4,9 @@ include mixins/comment
 block content 
     div#videoContainer(data-id = video._id)
         if video.src.startsWith("uploads")
-            video#videoInPlayer(src="/"+video.fileUrl)
+            video#videoInPlayer(src="/"+video.fileUrl,crossorigin)
         if !video.src.startsWith("uploads")
-            video#videoInPlayer(src=video.fileUrl)
+            video#videoInPlayer(src=video.fileUrl,crossorigin)
         div#videoControls
             div#videoCotnrols-timeline
                 input(type="range", step="1", value=0, min="0")#timeline
