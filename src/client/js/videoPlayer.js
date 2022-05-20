@@ -1,4 +1,4 @@
-const video = document.querySelector("video");
+const video = document.querySelector("#videoInPlayer");
 const playBtn = document.getElementById("play");
 const muteBtn = document.getElementById("mute");
 const volumeRange = document.getElementById("volume");
