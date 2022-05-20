@@ -152,9 +152,9 @@ export const postEdit = async (req, res) => {
     if (emailExists && emailExists._id.toString() !== _id) {
         return res.status(400).render("edit-profile", { pageTitle: "Edit Profile", errorMessage: `This email : ${email} is already taken` })
     }
-
+    const isHeroku = process.env.NODE_ENV === "production";
     const updatedUser = await User.findByIdAndUpdate(_id, {
-        avatarUrl: file ? file.path : avatarUrl,
+        avatarUrl: file ? (isHeroku ? file.location : file.path) : avatarUrl,
         name,
         email,
         username,

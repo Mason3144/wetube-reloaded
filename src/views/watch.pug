@@ -3,7 +3,10 @@ include mixins/comment
 
 block content 
     div#videoContainer(data-id = video._id)
-        video#videoInPlayer(src="/" + video.fileUrl)
+        if video.src.startsWith("uploads")
+            video#videoInPlayer(src="/"+video.fileUrl)
+        if !video.src.startsWith("uploads")
+            video#videoInPlayer(src=video.fileUrl)
         div#videoControls
             div#videoCotnrols-timeline
                 input(type="range", step="1", value=0, min="0")#timeline
