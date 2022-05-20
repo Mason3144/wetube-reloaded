@@ -1,10 +1,10 @@
 mixin video(video)
-
+    //- (style=`background-image:url(${video.thumbUrl});background-size:cover;background-position:center;`,crossorigin)
 
     a(href=`/videos/${video.id}`).video-mixin 
-        div.thumbnail_play(src=`${video.fileUrl}`,crossorigin)
-            div#thumbMouseover.video-mixin__thumb(style=`background-image:url(${video.thumbUrl});background-size:cover;background-position:center;`,crossorigin)
-            video#videoMouseover.hiding(src=`${video.fileUrl}`,muted)
+        div.thumbnail_play
+            img#thumbMouseover.video-mixin__thumb(src=`${video.thumbUrl}`,crossorigin)
+            video#videoMouseover.hiding(src=`${video.fileUrl}`,muted,crossorigin)
         div.video__avatar
             if video.owner.avatarUrl
                 if video.owner.avatarUrl.startsWith("uploads")
