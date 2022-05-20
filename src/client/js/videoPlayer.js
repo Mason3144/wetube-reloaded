@@ -68,40 +68,6 @@ const handleVolumeChange = (event) => {
 
 
 
-
-
-// const handleLoadedMetadata = () => {
-//         totalTime.innerText = formatTime(Math.floor(video.duration));
-//         timeline.max = Math.floor(video.duration)
-
-// }
-// const handleLoadedMetadata = (videoTotlaTime) => {
-//     totalTime.innerText = videoTotlaTime;
-//     timeline.max = videoTotlaTime;
-
-// }
-
-
-
-
-const totalVideoTime = () => {
-    const videoTimeFloor = Math.floor(video.duration)
-
-    if (videoTimeFloor >= 3600 * 1000) {
-        const videoTotlaTime = new Date(videoTimeFloor * 1000).toISOString().substring(11, 19);
-        return handleLoadedMetadata(videoTotlaTime)
-    } else {
-        const videoTotlaTime = new Date(videoTimeFloor * 1000).toISOString().substring(14, 19);
-        return handleLoadedMetadata(videoTotlaTime)
-    }
-};
-
-const handleLoadedMetadata = (videoTotlaTime) => {
-    totalTime.innerText = videoTotlaTime;
-    timeline.max = videoTotlaTime;
-
-}
-
 const formatTime = (seconds) => {
     if (seconds >= 3600 * 1000) {
         return new Date(seconds * 1000).toISOString().substring(11, 19);
@@ -109,6 +75,18 @@ const formatTime = (seconds) => {
         return new Date(seconds * 1000).toISOString().substring(14, 19);
     }
 };
+
+
+const handleLoadedMetadata = () => {
+    if (!isNaN(video.duration)) {
+        totalTime.innerText = formatTime(Math.floor(video.duration));
+        timeline.max = Math.floor(video.duration)
+    }
+
+
+}
+
+
 
 
 const handleTimeUpdate = () => {
@@ -196,7 +174,7 @@ const handleEnded = () => {
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange)
-video.addEventListener("canplay", totalVideoTime)
+video.addEventListener("canplay", handleLoadedMetadata)
 video.addEventListener("timeupdate", handleTimeUpdate)
 timeline.addEventListener("input", handleTimelineChange)
 timeline.addEventListener("change", pauseTimeline)
