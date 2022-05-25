@@ -19,7 +19,10 @@ export const watch = async (req, res) => {
         req.flash("error", "Video does not exist.")
         return res.status(404).render("404");
     }
+    console.log(video)
     return res.render("watch", { pageTitle: `Watch ${video.title}`, video });
+
+
 
 };
 
@@ -192,7 +195,7 @@ export const createComment = async (req, res) => {
         params: { id },
     } = req;
     const video = await Video.findById(id);
-
+    const owner = await User.findById(user._id)
     if (!video) {
         req.flash("error", "Video does not exist.")
         return res.sendStatus(404);
@@ -206,6 +209,8 @@ export const createComment = async (req, res) => {
     });
     const commentPopulate = await Comment.findById(comment._id).populate("owner");
     const avatarUrl = commentPopulate.owner.avatarUrl
+    owner.comment.push(comment._id)
+    owner.save()
     video.comment.push(comment._id)
     video.save()
 

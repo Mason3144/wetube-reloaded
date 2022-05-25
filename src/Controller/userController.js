@@ -1,5 +1,6 @@
 import User from "../models/User";
 import Video from "../models/Video";
+import Comment from "../models/Comment"
 import bcrypt from "bcrypt";
 import fetch from "node-fetch";
 
@@ -159,8 +160,12 @@ export const postEdit = async (req, res) => {
         email,
         username,
         location,
-    }, { new: true });
-
+    }, { new: true }).populate("comment");
+    // populating받는쪽의 스키마 설정(type:id, ref)후 populating하는쪽의 id를 받는쪽에 반드시 삽입시킨후 populating해야됨
+    updatedUser.comment.forEach((e) => {
+        e.avatarUrl = updatedUser.avatarUrl
+        e.save()
+    })
     req.session.user = updatedUser
     req.flash("success", "Changing profile success.")
     return res.redirect("/users/edit");
